@@ -26,6 +26,7 @@ struct NewToDo: View {
                         Button("Add"){
                             todos.append(newToDo)
                             addingNew = false
+                            newToDo.scheduleNotification()
                         }
                     }
                 }

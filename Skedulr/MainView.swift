@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 struct MainView: View {
     @Binding var todos: [ToDo]
@@ -33,7 +34,15 @@ struct MainView: View {
             }
         }
     }
-    
+}
+UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+    if granted {
+        // User granted permission
+        print("Notification permission granted")
+    } else if let error = error {
+        // Handle error
+        print("Error requesting notification permission: \(error.localizedDescription)")
+    }
 }
 #Preview {
     MainView(todos: .constant(ToDo.sampleData), classes: .constant(SingleClass.sampleData), completed: .constant(ToDo.sampleData), saveAction: {})

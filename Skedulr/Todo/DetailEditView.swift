@@ -44,6 +44,7 @@ struct DetailEditView: View {
             Section(header: Text("Task Info")){
                 TextField("Title", text: $todo.title)
                 ClassPicker(selection: $todo.section, classList: $classes)
+                DatePicker("Due Date", selection: $todo.deletionTime)
             }
         }
     }
