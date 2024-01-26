@@ -18,8 +18,6 @@ struct CardView: View {
             Spacer()
         }
             .padding()
-        .foregroundColor(todo.section.theme.accentColor)
-        .background(todo.section.theme.mainColor)
     }
 }
 

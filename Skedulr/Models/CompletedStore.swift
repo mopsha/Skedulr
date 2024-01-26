@@ -11,6 +11,7 @@ import Foundation
 
 @MainActor
 class CompletedStore: ObservableObject{
+    static let shared = CompletedStore()
     @Published var todos: [ToDo] = []
     private static func fileURL() throws -> URL {
         try FileManager.default.url(for: .documentDirectory,
@@ -40,5 +41,15 @@ class CompletedStore: ObservableObject{
             try data.write(to: outfile)
         }
         _ = try await task.value
+    }
+    func deleteCompleteItem(ToDo: ToDo) async {
+        if let index = todos.firstIndex(of: ToDo) {
+            todos.remove(at: index)
+            do{
+                try await save(todos: todos)
+            }catch{
+                
+            }
+        }
     }
 }

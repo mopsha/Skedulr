@@ -9,6 +9,7 @@ import SwiftUI
 import UserNotifications
 
 struct MainView: View {
+    
     @Binding var todos: [ToDo]
     @Binding var classes: [SingleClass]
     @Binding var completed: [ToDo]
@@ -20,14 +21,17 @@ struct MainView: View {
                 .font(.title)
             List{
                 NavigationLink(destination: ToDoView(todos: $todos, classes: $classes, completed: $completed)){
-                    Label("View Todos", systemImage: "checklist.unchecked")
+                    MainCards(label: "View To-Do's")
                 }
+                .padding()
                 NavigationLink(destination: CompletedView(completed: $completed, todos: $todos, classes: $classes)){
-                    Label("View Completed", systemImage: "checklist.checked")
+                    MainCards(label: "View Completed")
                 }
+                .padding()
                 NavigationLink(destination: ClassesView(classes: $classes)){
-                    Label("View Classes", systemImage: "studentdesk")
+                    MainCards(label: "View Classes")
                 }
+                .padding()
                 .onChange(of: scenePhase){ phase in
                     if phase == .inactive { saveAction() }
                 }

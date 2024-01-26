@@ -18,6 +18,8 @@ struct ToDoView: View {
                 NavigationLink(destination: DetailEditView(todo: $todo, classes: $classes, completed: $completed, todos: $todos)){
                     CardView(todo: todo)
                 }
+                .listRowBackground(todo.section.theme.mainColor)
+                .foregroundColor(todo.section.theme.accentColor)
             }
             .navigationTitle("To-Do")
             .toolbar {

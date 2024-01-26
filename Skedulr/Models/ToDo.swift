@@ -50,24 +50,55 @@ struct ToDo: Identifiable, Codable, Equatable{
     }
     
     private mutating func startDeletionTimer() {
-            guard Date() < deletionTime else { return }
+        guard Date() < deletionTime else { return }
 
-            // Calculate the time interval until deletionTime
-            let timeInterval = deletionTime.timeIntervalSinceNow
+        // Calculate the time interval until deletionTime
+        let timeInterval = deletionTime.timeIntervalSinceNow
 
-            // Create a timer to periodically check for deletion
-                self.deletionTimer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: false) { _ in
-                    if self.shouldDelete() {
-                        
-                        
+        // Create a timer to periodically check for deletion
+        self.deletionTimer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: false) { [self] _ in
+            if self.shouldDelete() {
+                let localSelf = self // Capture as an immutable copy
+                print("Deleting ToDo item: \(localSelf.title)")
+
+                // Call an asynchronous function here using 'await' if needed
+                Task {
+                    await ToDoStore.shared.deleteToDoItem(ToDo: localSelf)
                 }
             }
         }
+    }
 
         // Stop the deletion timer when it's no longer needed
     private mutating func stopDeletionTimer() {
             deletionTimer?.invalidate()
             deletionTimer = nil
+        }
+    enum CodingKeys: String, CodingKey {
+            case title
+            case id
+            case section
+            case state
+            case deletionTime
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.title = try container.decode(String.self, forKey: .title)
+            self.id = try container.decode(UUID.self, forKey: .id)
+            self.section = try container.decode(SingleClass.self, forKey: .section)
+            self.state = try container.decode(Bool.self, forKey: .state)
+            self.deletionTime = try container.decode(Date.self, forKey: .deletionTime)
+            startDeletionTimer()
+        }
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(title, forKey: .title)
+            try container.encode(id, forKey: .id)
+            try container.encode(section, forKey: .section)
+            try container.encode(state, forKey: .state)
+            try container.encode(deletionTime, forKey: .deletionTime)
         }
 }
 
