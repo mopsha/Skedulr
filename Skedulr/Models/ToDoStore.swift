@@ -39,4 +39,20 @@ class ToDoStore: ObservableObject{
         }
         _ = try await task.value
     }
+    
+    func deleteToDoItem(_ item: ToDo) {
+            // Implement the logic to delete the item from the server's database
+            // This could involve sending a DELETE request to a specific endpoint
+            guard let url = URL(string: "https://yourserver.com/api/todos/\(item.id)") else { return }
+            var request = URLRequest(url: url)
+            request.httpMethod = "DELETE"
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    print("Error deleting ToDo item: \(error.localizedDescription)")
+                    return
+                }
+                // Handle the response, update any necessary state
+            }
+            task.resume()
+        }
 }

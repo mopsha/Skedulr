@@ -19,6 +19,7 @@ struct CardView: View {
         }
             .padding()
         .foregroundColor(todo.section.theme.accentColor)
+        .background(todo.section.theme.mainColor)
     }
 }
 

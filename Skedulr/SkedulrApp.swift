@@ -13,6 +13,17 @@ struct SkedulrApp: App {
     @StateObject private var class_store = ClassStore()
     @StateObject private var completed_store = CompletedStore()
     @State private var errorWrapper: ErrorWrapper?
+    
+    private func requestNotificationPermission() {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
+                if granted {
+                    print("Notification permission granted.")
+                } else if let error = error {
+                    print("Error requesting notification permissions: \(error.localizedDescription)")
+                }
+            }
+        }
+    
     var body: some Scene {
         WindowGroup {
             MainView(todos: $store.todos, classes: $class_store.clas, completed: $completed_store.todos){
@@ -22,6 +33,12 @@ struct SkedulrApp: App {
                     } catch {
                         errorWrapper = ErrorWrapper(error: error, guidance: "Try again later.")
                     }
+                }
+            }
+            .task{
+                if !UserDefaults.standard.bool(forKey: "NotificationPermissionRequested") {
+                    requestNotificationPermission()
+                    UserDefaults.standard.set(true, forKey: "NotificationPermissionRequested")
                 }
             }
             .task{
