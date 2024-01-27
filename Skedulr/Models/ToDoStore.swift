@@ -57,4 +57,8 @@ class ToDoStore: ObservableObject{
             await CompletedStore.shared.deleteCompleteItem(ToDo: ToDo)
         }
     }
+    func deleteExpiredItems(){
+        todos.removeAll { $0.shouldDelete() }
+        CompletedStore.shared.deleteExpiredItems()
+    }
 }

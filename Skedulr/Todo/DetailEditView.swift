@@ -44,7 +44,19 @@ struct DetailEditView: View {
             Section(header: Text("Task Info")){
                 TextField("Title", text: $todo.title)
                 ClassPicker(selection: $todo.section, classList: $classes)
-                DatePicker("Due Date", selection: $todo.deletionTime)
+                DatePicker(
+                            "Select a Date and Time",
+                            selection: $todo.deletionTime,
+                            displayedComponents: [.date, .hourAndMinute]
+                        )
+                        .datePickerStyle(.graphical)
+                        .labelsHidden()
+                        .onAppear {
+                            let currentDate = Date()
+                            if todo.deletionTime < currentDate {
+                                todo.deletionTime = currentDate
+                            }
+                        }
             }
         }
     }

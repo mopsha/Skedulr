@@ -13,17 +13,23 @@ struct CompletedView: View {
     @Binding var classes: [SingleClass]
     var body: some View {
         NavigationStack{
-            List($completed){ $complete in
-                NavigationLink(destination: DetailEditView(todo: $complete, classes: $classes, completed: $completed, todos: $todos)){
-                    CardView(todo: complete)
+            List($todos){ $todo in
+                if !todo.shouldDelete(){
+                    NavigationLink(destination: DetailEditView(todo: $todo, classes: $classes, completed: $completed, todos: $todos)){
+                        CardView(todo: todo)
+                    }
+                    .listRowBackground(todo.section.theme.mainColor)
                 }
-                .listRowBackground(complete.section.theme.mainColor)
-                .foregroundColor(complete.section.theme.accentColor)
+            }
+            .onAppear{
+                todos.removeAll { $0.shouldDelete() }
+                // Call a method to delete expired items from the backend
+                ToDoStore.shared.deleteExpiredItems()
+                }
             }
             .navigationTitle("Completed")
+            .padding()
         }
-        .padding()
-    }
 }
 
 #Preview {

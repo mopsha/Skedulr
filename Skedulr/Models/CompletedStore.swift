@@ -52,4 +52,7 @@ class CompletedStore: ObservableObject{
             }
         }
     }
+    func deleteExpiredItems(){
+        todos.removeAll { $0.shouldDelete() }
+    }
 }

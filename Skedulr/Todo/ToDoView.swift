@@ -15,11 +15,18 @@ struct ToDoView: View {
     var body: some View {
         NavigationStack{
             List($todos){ $todo in
-                NavigationLink(destination: DetailEditView(todo: $todo, classes: $classes, completed: $completed, todos: $todos)){
-                    CardView(todo: todo)
+                if !todo.shouldDelete(){
+                    NavigationLink(destination: DetailEditView(todo: $todo, classes: $classes, completed: $completed, todos: $todos)){
+                        CardView(todo: todo)
+                    }
+                    .listRowBackground(todo.section.theme.mainColor)
                 }
-                .listRowBackground(todo.section.theme.mainColor)
-                .foregroundColor(todo.section.theme.accentColor)
+            }
+            .onAppear{
+                todos.removeAll { $0.shouldDelete() }
+                // Call a method to delete expired items from the backend
+                ToDoStore.shared.deleteExpiredItems()
+                }
             }
             .navigationTitle("To-Do")
             .toolbar {
@@ -30,12 +37,11 @@ struct ToDoView: View {
                 }
                 .accessibilityLabel("New Task")
             }
+            .padding()
+            .sheet(isPresented: $addingNew){
+                NewToDo(addingNew: $addingNew, todos: $todos, classes: $classes, completed: $completed)
+            }
         }
-        .padding()
-        .sheet(isPresented: $addingNew){
-            NewToDo(addingNew: $addingNew, todos: $todos, classes: $classes, completed: $completed)
-        }
-    }
 }
 
 #Preview{

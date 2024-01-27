@@ -33,8 +33,8 @@ struct ToDo: Identifiable, Codable, Equatable{
         guard Date() < deletionTime else { return }
         let notificationTime = Calendar.current.date(byAdding: .minute, value: -30, to: deletionTime) ?? deletionTime
         let content = UNMutableNotificationContent()
-        content.title = "Reminder: \(title)"
-        content.body = "Your task '\(title)' is about to be deleted."
+        content.title = "\(title)"
+        content.body = "Your task is due in 30 min"
         let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: notificationTime)
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
         let request = UNNotificationRequest(identifier: id.uuidString, content: content, trigger: trigger)
@@ -46,7 +46,7 @@ struct ToDo: Identifiable, Codable, Equatable{
     }
     
     static var emptyTask: ToDo{
-        ToDo(title: "", section: SingleClass.genericClass, deletionTime: Date(timeIntervalSinceNow: 10000000))
+        ToDo(title: "", section: SingleClass.genericClass, deletionTime: Date(timeIntervalSinceNow: 100))
     }
     
     private mutating func startDeletionTimer() {
