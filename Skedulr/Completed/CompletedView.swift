@@ -13,7 +13,7 @@ struct CompletedView: View {
     @Binding var classes: [SingleClass]
     var body: some View {
         NavigationStack{
-            List($todos){ $todo in
+            List($completed){ $todo in
                 if !todo.shouldDelete(){
                     NavigationLink(destination: DetailEditView(todo: $todo, classes: $classes, completed: $completed, todos: $todos)){
                         CardView(todo: todo)
